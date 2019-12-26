@@ -1,19 +1,9 @@
 #ifndef coin_h
 #define coin_h
 
-enum State {
+enum Coin {
     HEAD,
     TAIL,
-};
-
-struct Coin {
-    State state;
-    
-    Coin();
-    
-    Coin(State);
-    
-    void flip();
 };
 
 #endif

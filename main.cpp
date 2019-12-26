@@ -13,9 +13,9 @@ static char* ERROR_MESSAGE =
     (char*) "При заданных параметрах невозможно решить задачу";
 
 void fill(const Data& data, bool*);
-void proceed(Data& data, Entry<State>*, const bool*);
-void pushCoinOnNeedFlip(Data&, Entry<State>** top);
-void pushCoinOnNotNeedFlip(Data& data, Entry<State>** top);
+void proceed(Data& data, Entry<Coin>*, const bool*);
+void pushCoinOnNeedFlip(Data&, Entry<Coin>** top);
+void pushCoinOnNotNeedFlip(Data& data, Entry<Coin>** top);
 
 int main(int argc, const char *argv[])
 {
@@ -25,7 +25,7 @@ int main(int argc, const char *argv[])
     bool* needFlip = new bool[data.A];
     fill(data, needFlip);
     
-    Entry<State>* begin = Set<State>::init(HEAD);
+    Entry<Coin>* begin = Set<Coin>::init(HEAD);
 
     try {
         proceed(data, begin, needFlip);
@@ -34,12 +34,12 @@ int main(int argc, const char *argv[])
         return 0;
     }
     
-    Entry<State>* boxx = begin;
+    Entry<Coin>* boxx = begin;
     do {
         cout << (boxx->data == HEAD ? "H " : "T ");
     } while((boxx = boxx->next) != NULL);
     
-    Set<State>::free(begin);
+    Set<Coin>::free(begin);
     return 0;
 }
 
@@ -58,8 +58,8 @@ void fill(const Data& data, bool* needFlip) {
         }
 }
 
-void proceed(Data& data, Entry<State>* begin, bool* needFlip) {
-    Entry<State>** top = new Entry<State>*();
+void proceed(Data& data, Entry<Coin>* begin, bool* needFlip) {
+    Entry<Coin>** top = new Entry<Coin>*();
     *top = begin;
     
     for(int i = 1; i < data.A; ++i){
@@ -76,35 +76,35 @@ void proceed(Data& data, Entry<State>* begin, bool* needFlip) {
         throw ERROR_MESSAGE;
 }
 
-void pushCoinOnNeedFlip(Data& data, Entry<State>** top) {
+void pushCoinOnNeedFlip(Data& data, Entry<Coin>** top) {
     if(data.B > 0){
         if(data.H++ == data.N)
             throw ERROR_MESSAGE;
-        Set<State>::push(top, HEAD);
+        Set<Coin>::push(top, HEAD);
         data.B--;
     } else {
         if(data.T++ == data.M)
             throw ERROR_MESSAGE;
-        Set<State>::push(top, TAIL);
+        Set<Coin>::push(top, TAIL);
         data.B++;
     }
 }
 
-void pushCoinOnNotNeedFlip(Data& data, Entry<State>** top){
+void pushCoinOnNotNeedFlip(Data& data, Entry<Coin>** top){
     if(data.B > 0){
         if(data.T == data.M){
-            Set<State>::push(top, HEAD);
+            Set<Coin>::push(top, HEAD);
             ++data.H;
         } else {
-            Set<State>::push(top, TAIL);
+            Set<Coin>::push(top, TAIL);
             ++data.T;
         }
     } else {
         if(data.H == data.N){
-            Set<State>::push(top, TAIL);
+            Set<Coin>::push(top, TAIL);
             ++data.T;
         } else {
-            Set<State>::push(top, HEAD);
+            Set<Coin>::push(top, HEAD);
             ++data.H;
         }
     }
