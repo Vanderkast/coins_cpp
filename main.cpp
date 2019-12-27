@@ -22,9 +22,14 @@ int main(int argc, const char *argv[])
     Data data;
     data.fill();
     
+    if(data.N == 0){
+        cout << ERROR_MESSAGE;
+        return 0;
+    }
+    
     bool* needFlip = new bool[data.A];
     fill(data, needFlip);
-    
+   
     Entry<Coin>* begin = Set<Coin>::init(HEAD);
 
     try {
@@ -35,6 +40,7 @@ int main(int argc, const char *argv[])
     }
     
     Entry<Coin>* boxx = begin;
+    cout << endl;
     do {
         cout << (boxx->data == HEAD ? "H " : "T ");
     } while((boxx = boxx->next) != NULL);
@@ -48,7 +54,7 @@ void fill(const Data& data, bool* needFlip) {
         needFlip[i] = false;
     
     int box;
-    if(data.S == 1) // т.к. (i * data.S - 1) % data.A ~ 0, при S = 1
+    if(data.S % data.A == 1) // т.к. (i * data.S - 1) % data.A ~ 0, при S = 1
         for (int i = 1; i <= data.K; ++i)
             needFlip[i] = i % data.A;
     else
@@ -58,11 +64,11 @@ void fill(const Data& data, bool* needFlip) {
         }
 }
 
-void proceed(Data& data, Entry<Coin>* begin, bool* needFlip) {
+void proceed(Data& data, Entry<Coin>* begin, const bool* needFlip) {
     Entry<Coin>** top = new Entry<Coin>*();
     *top = begin;
     
-    for(int i = 1; i < data.A; ++i){
+    for(int i = 0; i < data.A; ++i){
         if(needFlip[i]){
             pushCoinOnNeedFlip(data, top);
         } else {
@@ -78,12 +84,12 @@ void proceed(Data& data, Entry<Coin>* begin, bool* needFlip) {
 
 void pushCoinOnNeedFlip(Data& data, Entry<Coin>** top) {
     if(data.B > 0){
-        if(data.H++ == data.N)
+        if(data.H++ >= data.N)
             throw ERROR_MESSAGE;
         Set<Coin>::push(top, HEAD);
         data.B--;
     } else {
-        if(data.T++ == data.M)
+        if(data.T++ >= data.M)
             throw ERROR_MESSAGE;
         Set<Coin>::push(top, TAIL);
         data.B++;
